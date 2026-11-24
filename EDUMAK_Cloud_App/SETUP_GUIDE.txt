@@ -3,7 +3,7 @@ EDUMAK SETUP GUIDE — READ BEFORE USING
 
 A. Configure the cloud database
 1. Sign in to the Supabase account that owns this project URL:
-   https://itipbmvfghvlffbbhkzr.supabase.co
+   https://szngyfpvmyqwsjsphwwx.supabase.co
 2. Open the project dashboard.
 3. Run the SQL scripts in this order. Each one is safe to re-run.
    a) NEW project: database_setup.sql, then every file in the migrations/ folder in
@@ -22,9 +22,9 @@ A. Configure the cloud database
 4. Open Project Settings / API (or API Keys).
 5. Copy the public anon key / publishable key. Do NOT copy service_role or
    any secret key.
-6. Open config.js and replace:
-   PASTE_YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY_HERE
-   with the public key. Keep the key inside quotation marks.
+6. The current project's config.js is already populated with its Project URL and
+   public publishable key. If you create a different Supabase project later, update
+   config.js with that project's URL and public key. Never use a secret/service_role key.
 
 B. Create the first administrator
 1. Open the app after it is hosted (or run it locally for initial setup).
