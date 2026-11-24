@@ -1,5 +1,5 @@
-const CACHE='edumak-shell-v5';
-const FILES=['./','./index.html','./style.css','./app.js','./config.js','./manifest.webmanifest'];
+const CACHE='edumak-shell-v6';
+const FILES=['./','./index.html','./style.css','./app.js','./config.js','./manifest.webmanifest','./icons/edumak-icon.svg'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES))));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))));
 self.addEventListener('fetch',e=>{
