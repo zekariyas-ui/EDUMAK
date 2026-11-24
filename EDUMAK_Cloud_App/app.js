@@ -260,3 +260,5 @@ window.addEventListener('offline',()=>{state.offline=true;updateSyncBar()});
 setInterval(updateSyncBar,30000);
 setInterval(tickCountdowns,1000);setInterval(()=>{if(sb&&document.visibilityState==='visible')refreshData()},6*60*60*1000);document.addEventListener('visibilitychange',()=>{if(sb&&document.visibilityState==='visible'&&Date.now()-state.lastRefresh>=6*60*60*1000)refreshData()});init();
 })();
+
+// EDUMAK role management and installable PWA feature branch validation.
