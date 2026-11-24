@@ -10,20 +10,20 @@ A. Configure the cloud database
       numeric order: 001_datasets.sql, 002_librarian_loans_and_integrity.sql,
       003_loan_history_protection.sql, 004_security_hardening.sql,
       005_security_definer_exposure.sql, 006_least_privilege_table_grants.sql,
-      and 007_public_catalogue_availability.sql.
+      and 007_public_catalogue_availability.sql,\n      and 008_multiple_admin_roles.sql.
    b) EXISTING project: run only migrations not already recorded in
-      public.edumak_schema_migrations, in numeric order through 007.
+      public.edumak_schema_migrations, in numeric order through 008.
       (001 is the former migration_datasets.sql, moved here unchanged.)
    c) Optional: before 002, run migrations/preflight_002_readonly.sql. It changes
       nothing and lists what 002 will meet (for example duplicate active loans).
-   Migrations 001–007 are REQUIRED for the complete current feature set. 002 makes
+   Migrations 001–008 are REQUIRED for the complete current feature set. 002 makes
    borrowing and returning librarian-only, adds the manual-book snapshot, availability
    and server-time functions, and guards.
    003 protects borrowing history and adds audited corrections.
    004 hardens trigger functions. 005 removes anonymous access to privileged helpers
    and pins reviewed SECURITY DEFINER functions to a safe search path. 006 narrows
    Data API table grants to the operations required by the app, alongside RLS.
-   007 preserves guest access to the aggregate-only public catalogue availability.
+   007 preserves guest access to the aggregate-only public catalogue availability.\n   008 adds Super Admin and Librarian Admin roles, a protected role-management RPC,\n   an audit log for role changes, and a last-Super-Admin safeguard.
    If database_setup.sql is ever re-run after 002, it re-applies the lockdown
    automatically; re-run 002 afterwards to be sure everything is current.
 4. Open Project Settings / API (or API Keys).
@@ -37,8 +37,8 @@ B. Create the first administrator
 1. Open the app after it is hosted (or run it locally for initial setup).
 2. Use Student account > Register to create the account intended to be admin.
 3. In Supabase Dashboard > SQL Editor, run this statement, replacing the
-   email with the exact administrator email:
-   update public.profiles set role='admin' where email='admin@example.com';
+   email with the exact email of the person who will be the first Super Admin:
+   update public.profiles set role='super_admin' where email='admin@example.com';
    The SQL setup permits this trusted Dashboard operation. App users cannot
    promote themselves; only an existing admin can change roles in the app.
 4. Sign out and sign in through Admin Dashboard using that email/password.

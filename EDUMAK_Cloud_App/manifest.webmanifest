@@ -6,5 +6,7 @@
   "background_color": "#f5f7fc",
   "theme_color": "#101a35",
   "description": "Shared digital library for students and administrators.",
-  "icons": []
+  "icons": [
+    {"src":"./icons/edumak-icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
 }
