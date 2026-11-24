@@ -16,8 +16,9 @@ A. Configure the cloud database
       (001 is the former migration_datasets.sql, moved here unchanged.)
    c) Optional: before 002, run migrations/preflight_002_readonly.sql. It changes
       nothing and lists what 002 will meet (for example duplicate active loans).
-   Migrations 002 and 003 are REQUIRED. 002 makes borrowing and returning librarian-only,
-   adds the manual-book snapshot, availability and server-time functions, and guards.
+   Migrations 001–007 are REQUIRED for the complete current feature set. 002 makes
+   borrowing and returning librarian-only, adds the manual-book snapshot, availability
+   and server-time functions, and guards.
    003 protects borrowing history and adds audited corrections.
    004 hardens trigger functions. 005 removes anonymous access to privileged helpers
    and pins reviewed SECURITY DEFINER functions to a safe search path. 006 narrows
@@ -96,10 +97,10 @@ F. PDF storage
 
 G. Shared datasets
 - database_setup.sql creates the dataset table and private storage bucket for a new installation.
-- migration_datasets.sql adds the same dataset features to an existing EDUMAK database.
+- For an existing installation, apply migrations/001_datasets.sql if it is not already recorded.
 - Admins can upload CSV, JSON, XLSX and XLS files up to 25 MB. Each upload creates a new version; previous versions remain in the catalogue.
 - Signed download links are created when a logged-in user downloads a dataset.
-- Do not rerun the complete setup on an existing installation just for datasets; use migration_datasets.sql.
+- Do not rerun the baseline setup on an existing installation just for datasets; apply the missing numbered migrations in order.
 
 H. Synchronization
 - Supabase Realtime refreshes the library when a new PDF, dataset, book or loan is recorded. Students currently using the app see an in-app notification when a PDF or dataset is added.
