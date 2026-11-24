@@ -9,9 +9,10 @@ A. Configure the cloud database
    a) NEW project: database_setup.sql, then every file in the migrations/ folder in
       numeric order: 001_datasets.sql, 002_librarian_loans_and_integrity.sql,
       003_loan_history_protection.sql, 004_security_hardening.sql,
-      005_security_definer_exposure.sql, and 006_least_privilege_table_grants.sql.
+      005_security_definer_exposure.sql, 006_least_privilege_table_grants.sql,
+      and 007_public_catalogue_availability.sql.
    b) EXISTING project: run only migrations not already recorded in
-      public.edumak_schema_migrations, in numeric order through 006.
+      public.edumak_schema_migrations, in numeric order through 007.
       (001 is the former migration_datasets.sql, moved here unchanged.)
    c) Optional: before 002, run migrations/preflight_002_readonly.sql. It changes
       nothing and lists what 002 will meet (for example duplicate active loans).
@@ -21,6 +22,7 @@ A. Configure the cloud database
    004 hardens trigger functions. 005 removes anonymous access to privileged helpers
    and pins reviewed SECURITY DEFINER functions to a safe search path. 006 narrows
    Data API table grants to the operations required by the app, alongside RLS.
+   007 preserves guest access to the aggregate-only public catalogue availability.
    If database_setup.sql is ever re-run after 002, it re-applies the lockdown
    automatically; re-run 002 afterwards to be sure everything is current.
 4. Open Project Settings / API (or API Keys).
