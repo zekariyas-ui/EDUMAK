@@ -8,7 +8,7 @@ A. Configure the cloud database
 3. Run the SQL scripts in this order. Each one is safe to re-run.
    a) NEW project: database_setup.sql, then every file in the migrations/ folder in
       numeric order (001_datasets.sql, 002_librarian_loans_and_integrity.sql, then
-      003_loan_history_protection.sql).
+      003_loan_history_protection.sql, then\n      004_security_hardening.sql).
    b) EXISTING project: run only the migrations it has not had yet. From the FINAL
       package run 001, 002 then 003. From the UPDATED2 package run 002 then 003.
       (001 is the former migration_datasets.sql, moved here unchanged.)
