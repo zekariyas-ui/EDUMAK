@@ -1,0 +1,7 @@
+{
+  "name": "edumak-tests",
+  "private": true,
+  "description": "JavaScript tests for the EDUMAK client (simulated DOM + mocked Supabase; not a real Supabase project).",
+  "scripts": { "test": "node --test" },
+  "devDependencies": { "jsdom": "^24.1.0" }
+}
