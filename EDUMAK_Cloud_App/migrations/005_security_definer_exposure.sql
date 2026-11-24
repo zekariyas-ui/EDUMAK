@@ -2,9 +2,9 @@
 -- rls_auto_enable is a PostgreSQL event-trigger function, never an application RPC.
 revoke all on function public.rls_auto_enable() from public, anon, authenticated;
 
--- Availability is used by the signed-in app; anonymous callers do not need it.
-revoke all on function public.get_book_availability() from public, anon;
-grant execute on function public.get_book_availability() to authenticated;
+-- Catalogue availability is intentionally public aggregate data; no student data is returned.
+revoke all on function public.get_book_availability() from public;
+grant execute on function public.get_book_availability() to anon, authenticated;
 
 -- These reviewed SECURITY DEFINER functions use schema-qualified objects.
 -- Pin resolution to pg_catalog to prevent public-schema object shadowing.
