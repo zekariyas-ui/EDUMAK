@@ -16,7 +16,7 @@ A. Configure the cloud database
       nothing and lists what 002 will meet (for example duplicate active loans).
    Migrations 002 and 003 are REQUIRED. 002 makes borrowing and returning librarian-only,
    adds the manual-book snapshot, availability and server-time functions, and guards.
-   003 protects borrowing history and adds audited corrections.\n   004 hardens trigger functions. 005 removes anonymous access to privileged helpers\n   and pins reviewed SECURITY DEFINER functions to a safe search path.
+   003 protects borrowing history and adds audited corrections.\n   004 hardens trigger functions. 005 removes anonymous access to privileged helpers\n   and pins reviewed SECURITY DEFINER functions to a safe search path. 006 narrows\n   Data API table grants to the operations required by the app, alongside RLS.
    If database_setup.sql is ever re-run after 002, it re-applies the lockdown
    automatically; re-run 002 afterwards to be sure everything is current.
 4. Open Project Settings / API (or API Keys).
