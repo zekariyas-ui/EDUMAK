@@ -1,0 +1,125 @@
+EDUMAK SETUP GUIDE — READ BEFORE USING
+========================================
+
+A. Configure the cloud database
+1. Sign in to the Supabase account that owns this project URL:
+   https://itipbmvfghvlffbbhkzr.supabase.co
+2. Open the project dashboard.
+3. Run the SQL scripts in this order. Each one is safe to re-run.
+   a) NEW project: database_setup.sql, then every file in the migrations/ folder in
+      numeric order (001_datasets.sql, 002_librarian_loans_and_integrity.sql, then
+      003_loan_history_protection.sql).
+   b) EXISTING project: run only the migrations it has not had yet. From the FINAL
+      package run 001, 002 then 003. From the UPDATED2 package run 002 then 003.
+      (001 is the former migration_datasets.sql, moved here unchanged.)
+   c) Optional: before 002, run migrations/preflight_002_readonly.sql. It changes
+      nothing and lists what 002 will meet (for example duplicate active loans).
+   Migrations 002 and 003 are REQUIRED. 002 makes borrowing and returning librarian-only,
+   adds the manual-book snapshot, availability and server-time functions, and guards.
+   003 protects borrowing history and adds audited corrections.
+   If database_setup.sql is ever re-run after 002, it re-applies the lockdown
+   automatically; re-run 002 afterwards to be sure everything is current.
+4. Open Project Settings / API (or API Keys).
+5. Copy the public anon key / publishable key. Do NOT copy service_role or
+   any secret key.
+6. Open config.js and replace:
+   PASTE_YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY_HERE
+   with the public key. Keep the key inside quotation marks.
+
+B. Create the first administrator
+1. Open the app after it is hosted (or run it locally for initial setup).
+2. Use Student account > Register to create the account intended to be admin.
+3. In Supabase Dashboard > SQL Editor, run this statement, replacing the
+   email with the exact administrator email:
+   update public.profiles set role='admin' where email='admin@example.com';
+   The SQL setup permits this trusted Dashboard operation. App users cannot
+   promote themselves; only an existing admin can change roles in the app.
+4. Sign out and sign in through Admin Dashboard using that email/password.
+5. Do not make students administrators. Student accounts are created with
+   the student role automatically.
+
+C. Host it so phones and computers share the same cloud data
+1. Upload the CONTENTS of this folder to a static HTTPS host (for example,
+   a static website host that supports HTML/CSS/JS files).
+2. Keep index.html, app.js, config.js, style.css, database_setup.sql,
+   manifest.webmanifest and service-worker.js together in the same folder.
+3. Open the hosted HTTPS address on a computer and phone.
+4. Register a student account on one device, then log in with that same
+   account on another device. Both devices connect to the same Supabase
+   project; data is not stored only on one device.
+
+D. Install on Android / desktop
+- Android: open the hosted HTTPS website in Chrome, use browser menu >
+  Install app or Add to Home screen (wording varies).
+- Desktop: open the hosted site in a supported browser and use its install
+  icon/menu if offered.
+
+E. Borrowing rules (librarian-controlled)
+- Only the librarian (an admin account) records borrowing and returns, on the Lending
+  Desk in the Admin Dashboard, normally on the librarian's computer.
+- The librarian searches for a student, then picks a catalogue book OR enters a book
+  manually (title required; author and identification number optional). A manual entry
+  is saved only inside the loan record. It is NOT added to the catalogue.
+- Supabase sets due_at to exactly 72 hours after the moment the loan is recorded, using
+  database time. Neither the librarian's nor the student's device clock is used.
+- Students log in on their own phones and can only VIEW their own loans, due dates,
+  return dates and a live countdown. They cannot borrow, return or change anything;
+  this is enforced by the database, not just by hiding buttons.
+- A student cannot hold two active loans of the same book. A catalogue book cannot be
+  lent beyond its number of copies, and its total quantity cannot be lowered below the
+  copies currently on loan.
+- A book that has ever been borrowed cannot be deleted; set its quantity to 0 instead.
+- Loan history is protected (migration 003). A loan record can never be deleted, and its
+  student, book, dates and deadline never change. The only direct change allowed is the
+  librarian's "Record return". Editing a loan in the Supabase Table Editor is refused.
+- A genuine mistake is fixed on the Lending Desk with "Undo return" (a return recorded by
+  mistake) or "Edit details" (a typo in a manually entered book). Both need a written
+  reason and leave a permanent audit record (who, when, why, old and new values) in the
+  loan_corrections table, which admins can read and nobody can edit or delete.
+- Limit: someone with full database-owner access can still disable triggers. The protection
+  stops the app, the API and accidents, not a deliberate owner-level override.
+- "Due soon" is shown during the last 24 hours before the due time.
+- Available quantity is total_quantity minus active catalogue loans. Manual loans do not
+  use catalogue copies. All users see availability counts, never other students' loans.
+
+F. PDF storage
+- Admin uploads PDF files up to 25 MB.
+- PDFs are stored in the private Supabase bucket named edumak-pdfs.
+- Signed links are temporary; the app generates a short-lived link when
+  a user opens a PDF.
+
+G. Shared datasets
+- database_setup.sql creates the dataset table and private storage bucket for a new installation.
+- migration_datasets.sql adds the same dataset features to an existing EDUMAK database.
+- Admins can upload CSV, JSON, XLSX and XLS files up to 25 MB. Each upload creates a new version; previous versions remain in the catalogue.
+- Signed download links are created when a logged-in user downloads a dataset.
+- Do not rerun the complete setup on an existing installation just for datasets; use migration_datasets.sql.
+
+H. Synchronization
+- Supabase Realtime refreshes the library when a new PDF, dataset, book or loan is recorded. Students currently using the app see an in-app notification when a PDF or dataset is added.
+- This is an in-app notification, not an operating-system push notification; push notifications while the app is closed are not included.
+- The app also checks for changes every six hours while open, and when a tab becomes visible after six hours.
+- The top bar shows when the library was last synced, a Refresh button and an Offline badge. If a refresh fails (for example without internet) the app keeps showing the last data it loaded.
+- Actual cloud operation still requires the correct public Supabase key in config.js and the SQL setup to be run.
+
+Troubleshooting
+- "Supabase is not configured": public key is missing or pasted incorrectly.
+- "The database needs the latest update": migration 002 has not been run in Supabase.
+- "Loan history cannot be edited": expected. Loan records are protected; use Undo return or Edit details on the Lending Desk (a reason is required).
+- "Invalid API key": use the correct public anon/publishable key for the
+  project URL; never use a secret/service_role key.
+- Registration/login fails: check Supabase Auth settings and email
+  confirmation requirements. Check that the email address is accessible.
+- Admin login says not authorized: confirm the exact account email was
+  promoted with the SQL statement in section B.
+- PDF upload fails: confirm the SQL setup ran successfully and storage
+  bucket/policies exist.
+- On other devices: use the same hosted HTTPS address and ensure internet
+  access. The PWA cache only caches the app shell; live data needs internet.
+
+Limitations
+- This package does not deploy itself or create a Supabase account.
+- The existing project URL is embedded in config.js, but its ownership and
+  current availability have not been independently verified.
+- Do not publish the app until you have tested student and admin accounts,
+  borrowing/returning, quantity counts, and PDF access.

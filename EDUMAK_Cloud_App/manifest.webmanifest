@@ -1,0 +1,10 @@
+{
+  "name": "EDUMAK Digital Library",
+  "short_name": "EDUMAK",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f5f7fc",
+  "theme_color": "#101a35",
+  "description": "Shared digital library for students and administrators.",
+  "icons": []
+}
