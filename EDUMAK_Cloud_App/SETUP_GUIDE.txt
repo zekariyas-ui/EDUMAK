@@ -8,7 +8,7 @@ A. Configure the cloud database
 3. Run the SQL scripts in this order. Each one is safe to re-run.
    a) NEW project: database_setup.sql, then every file in the migrations/ folder in
       numeric order (001_datasets.sql, 002_librarian_loans_and_integrity.sql, then
-      003_loan_history_protection.sql, then\n      004_security_hardening.sql).
+      003_loan_history_protection.sql, then\n      004_security_hardening.sql, then 005_security_definer_exposure.sql).
    b) EXISTING project: run only the migrations it has not had yet. From the FINAL
       package run 001, 002 then 003. From the UPDATED2 package run 002 then 003.
       (001 is the former migration_datasets.sql, moved here unchanged.)
@@ -16,7 +16,7 @@ A. Configure the cloud database
       nothing and lists what 002 will meet (for example duplicate active loans).
    Migrations 002 and 003 are REQUIRED. 002 makes borrowing and returning librarian-only,
    adds the manual-book snapshot, availability and server-time functions, and guards.
-   003 protects borrowing history and adds audited corrections.
+   003 protects borrowing history and adds audited corrections.\n   004 hardens trigger functions. 005 removes anonymous access to privileged helpers\n   and pins reviewed SECURITY DEFINER functions to a safe search path.
    If database_setup.sql is ever re-run after 002, it re-applies the lockdown
    automatically; re-run 002 afterwards to be sure everything is current.
 4. Open Project Settings / API (or API Keys).
