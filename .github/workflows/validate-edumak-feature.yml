@@ -1,0 +1,58 @@
+name: Validate EDUMAK feature branch
+
+on:
+  push:
+    branches:
+      - feature/admin-roles-pwa
+    paths:
+      - 'EDUMAK_Cloud_App/**'
+      - '.github/workflows/validate-edumak-feature.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check JavaScript syntax
+        run: |
+          node --check EDUMAK_Cloud_App/app.js
+          node --check EDUMAK_Cloud_App/service-worker.js
+      - name: Validate PWA manifest and HTML IDs
+        run: |
+          python3 - <<'PY'
+          import json
+          from html.parser import HTMLParser
+          from pathlib import Path
+
+          root = Path("EDUMAK_Cloud_App")
+          manifest = json.loads((root / "manifest.webmanifest").read_text())
+          assert manifest["name"] == "EDUMAK Digital Library"
+          assert manifest["display"] == "standalone"
+          assert manifest["icons"], "PWA manifest has no icons"
+          for icon in manifest["icons"]:
+              assert (root / icon["src"].removeprefix("./")).is_file(), icon["src"]
+
+          class IDs(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.values = []
+              def handle_starttag(self, tag, attrs):
+                  value = dict(attrs).get("id")
+                  if value:
+                      self.values.append(value)
+
+          parser = IDs()
+          parser.feed((root / "index.html").read_text())
+          duplicates = sorted({value for value in parser.values if parser.values.count(value) > 1})
+          assert not duplicates, f"Duplicate HTML IDs: {duplicates}"
+          print(f"Manifest valid; {len(manifest['icons'])} icon(s) found; {len(parser.values)} unique HTML IDs.")
+          PY
