@@ -310,6 +310,23 @@ test('librarian: student search sends the typed query and never lists admins', a
   a.close();
 });
 
+test('lending desk has its own page and is only navigable by administrators', async () => {
+  const student = await boot(studentEnv());
+  const studentNav = student.all('[data-page="lending"]')[0];
+  assert.ok(studentNav.classList.contains('hidden'), 'students do not see the Lending Desk navigation');
+  await student.click('[data-page="lending"]');
+  assert.ok(student.$('admin').classList.contains('active'), 'unauthorized navigation sends the student to Admin Dashboard login');
+  assert.ok(!student.$('lending').classList.contains('active'), 'students cannot open the Lending Desk page');
+  student.close();
+
+  const admin = await boot(adminEnv());
+  const adminNav = admin.all('[data-page="lending"]')[0];
+  assert.ok(!adminNav.classList.contains('hidden'), 'administrators see the Lending Desk navigation');
+  await admin.click('[data-page="lending"]');
+  assert.ok(admin.$('lending').classList.contains('active'), 'administrators can open the dedicated Lending Desk page');
+  admin.close();
+});
+
 test('auth listener stays synchronous and signing out restores the public catalogue', async () => {
   const env = studentEnv(); const a = await boot(env);
   const before = env.callsTo('from', 'profiles').length;
