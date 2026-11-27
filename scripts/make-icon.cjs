@@ -13,7 +13,7 @@ async function main() {
   fs.mkdirSync(outputDir, { recursive: true });
 
   const png = await sharp(source).resize(256, 256).png().toBuffer();
-  const ico = await pngToIco(png);
+  const ico = await pngToIco([png]);
   fs.writeFileSync(output, ico);
   console.log('Created Windows application icon:', output);
 }
