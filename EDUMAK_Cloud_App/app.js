@@ -16,7 +16,7 @@ document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=
 $('menuBtn').addEventListener('click',()=>$('sidebar').classList.toggle('open'));
 $('year').textContent=new Date().getFullYear();
 function currentStudent(){return state.user && state.profile?.role==='student'}
-function updateHeader(){ $('userLabel').textContent=state.user?(state.profile?.display_name||state.user.email):'Guest';$('accountBtn').textContent=state.user?'Log out':'Login';const lendingNav=$('[data-page="lending"]');if(lendingNav)lendingNav.classList.toggle('hidden',!state.admin); }
+function updateHeader(){ $('userLabel').textContent=state.user?(state.profile?.display_name||state.user.email):'Guest';$('accountBtn').textContent=state.user?'Log out':'Login';const lendingNav=document.querySelector('[data-page="lending"]');if(lendingNav)lendingNav.classList.toggle('hidden',!state.admin); }
 function openAuth(){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab==='loginForm'));$('loginForm').classList.remove('hidden');$('registerForm').classList.add('hidden');$('authDialog').showModal()}
 $('accountBtn').addEventListener('click',async()=>{if(state.user){await sb.auth.signOut();}else openAuth()});
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));$('loginForm').classList.toggle('hidden',b.dataset.tab!=='loginForm');$('registerForm').classList.toggle('hidden',b.dataset.tab!=='registerForm')}));
