@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - feature/admin-roles-pwa
+      - feature/dedicated-lending-desk
     paths:
       - 'EDUMAK_Cloud_App/**'
       - '.github/workflows/validate-edumak-feature.yml'
+      - 'tests/js/**'
   workflow_dispatch:
 
 permissions:
@@ -22,6 +24,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Install JavaScript test dependencies
+        run: npm ci
+        working-directory: tests/js
+      - name: Run JavaScript tests
+        run: npm test
+        working-directory: tests/js
       - name: Check JavaScript syntax
         run: |
           node --check EDUMAK_Cloud_App/app.js
