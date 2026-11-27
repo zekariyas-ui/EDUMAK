@@ -9,7 +9,7 @@
     "dist:win": "npm run make:icon && electron-builder --win nsis --x64"
   },
   "devDependencies": {
-    "electron": "^40.0.0",
+    "electron": "^45.0.0",
     "electron-builder": "^26.0.12",
     "sharp": "^0.34.2",
     "png-to-ico": "^2.1.8"
